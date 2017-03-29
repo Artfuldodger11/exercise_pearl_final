@@ -1,4 +1,4 @@
-package config;
+package project.config;
 
 
 import org.apache.commons.dbcp.BasicDataSource;
@@ -22,11 +22,12 @@ import java.util.Properties;
 
 
 @Configuration
-@ComponentScan(basePackages = {"java"})
+@ComponentScan (basePackages = "project")
 @EnableTransactionManagement
 public class SpringConfig {
 
    private static final String DATABASE_PROPERTIES_FILE = "database.properties";
+
 
 
              @Bean
@@ -36,6 +37,7 @@ public class SpringConfig {
                                 new ClassPathResource(DATABASE_PROPERTIES_FILE)
                                 };
                 p.setLocations(resourceLocations);
+                p.setIgnoreUnresolvablePlaceholders(true);
                 return p;
             }
 
@@ -57,7 +59,7 @@ public class SpringConfig {
      public DataSource dataSource(
              @Value("${driverClass}") String driver,
              @Value("${dbUrl}") String url,
-             @Value("${userName}") String user,
+             @Value("${user}") String user,
              @Value("${password}") String password) throws PropertyVetoException {
                 BasicDataSource dataSource = new BasicDataSource();
                 dataSource.setDriverClassName(driver);
@@ -67,5 +69,25 @@ public class SpringConfig {
                 dataSource.setDefaultAutoCommit(false);
                 return dataSource;
             }
+
+    @Bean
+    public SessionFactory sessionFactory(DataSource dataSource,
+                                         @Value("${hibernate.packagesToScan}") String packagesToScan,
+                                         @Qualifier("hibernateProperties") Properties properties) throws Exception {
+        LocalSessionFactoryBean sessionFactoryBean
+                = new LocalSessionFactoryBean();
+        sessionFactoryBean.setDataSource(dataSource);
+        sessionFactoryBean.setPackagesToScan(packagesToScan);
+        sessionFactoryBean.setHibernateProperties(properties);
+        sessionFactoryBean.afterPropertiesSet();
+        return sessionFactoryBean.getObject();
+    }
+
+    @Bean
+    public PlatformTransactionManager transactionManager(SessionFactory sessionFactory) {
+        return new HibernateTransactionManager(sessionFactory);
+    }
+
+
 
 }

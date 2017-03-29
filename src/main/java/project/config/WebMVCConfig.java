@@ -1,4 +1,4 @@
-package config;
+package project.config;
 
 
 import org.springframework.context.annotation.Bean;
@@ -9,23 +9,25 @@ import org.springframework.web.servlet.config.annotation.EnableWebMvc;
 import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurerAdapter;
 import org.springframework.web.servlet.view.InternalResourceViewResolver;
+import org.springframework.web.servlet.view.JstlView;
 
 
 @Configuration
 @EnableWebMvc
-@ComponentScan(basePackages = {"java"})
+@ComponentScan(basePackages = "project")
 public class WebMVCConfig extends WebMvcConfigurerAdapter {
     @Bean
     public ViewResolver viewResolver() {
-        InternalResourceViewResolver viewResolver = new InternalResourceViewResolver();
-        viewResolver.setPrefix("/");
-        viewResolver.setSuffix(".jsp");
-        return viewResolver;
+        InternalResourceViewResolver resolver = new InternalResourceViewResolver();
+        resolver.setViewClass(JstlView.class);
+        resolver.setPrefix("/");
+        resolver.setSuffix(".jsp");
+        return resolver;
     }
     @Override
     public void addResourceHandlers(ResourceHandlerRegistry registry) {
-//       registry.addResourceHandler("/views/**")
-//              .addResourceLocations("/views/");
+      registry.addResourceHandler("/**")
+       .addResourceLocations("/");
 //
 //         registry.addResourceHandler("/styles/**")
 //                 .addResourceLocations("/styles/");
