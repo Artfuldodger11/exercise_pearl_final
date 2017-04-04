@@ -11,6 +11,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -30,10 +31,12 @@ public class RSSFeedParserImpl implements RSSFeedParser {
     static final String ITEM = "item";
     static final String PUB_DATE = "pubDate";
 
-
     private URL url;
     String feedName = null;
+    String pubdateString;
     List<Item> items = new ArrayList<>();
+    DateTimeParser dateTimeParser = new DateTimeParserImpl();
+
 
 
     public RSSFeedParserImpl() {
@@ -58,7 +61,7 @@ public class RSSFeedParserImpl implements RSSFeedParser {
             String description = "";
             String title = "";
             String link = "";
-            String pubdate = "";
+            org.joda.time.LocalDateTime pubdate = null;
             String feedName = this.feedName;
 
             // First create a new XMLInputFactory
@@ -76,6 +79,7 @@ public class RSSFeedParserImpl implements RSSFeedParser {
                         case ITEM:
                             if (isFeedHeader) {
                                 isFeedHeader = false;
+                                pubdate = dateTimeParser.timeToJodaTime( dateTimeParser.parseDate(pubdateString));
                                 feed = new Feed(link,title,pubdate,feedName);
                             }
                             event = eventReader.nextEvent();
@@ -91,7 +95,7 @@ public class RSSFeedParserImpl implements RSSFeedParser {
                             break;
 
                         case PUB_DATE:
-                            pubdate = getCharacterData(event, eventReader);
+                            pubdateString = getCharacterData(event, eventReader);
                             break;
 
                     }

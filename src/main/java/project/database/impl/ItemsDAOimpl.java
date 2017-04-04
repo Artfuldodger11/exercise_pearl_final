@@ -1,6 +1,7 @@
 package project.database.impl;
 
 
+import org.hibernate.criterion.Restrictions;
 import project.database.DBException;
 import project.database.ItemsDAO;
 
@@ -12,6 +13,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
+
 @Component ("ORM_ItemsDAO")
 @Transactional
 public class ItemsDAOimpl implements ItemsDAO {
@@ -19,16 +22,19 @@ public class ItemsDAOimpl implements ItemsDAO {
     @Autowired
     private SessionFactory sessionFactory;
 
-
     @Override
-    public void create(Item item) throws DBException {
+    public int create(Item item) throws DBException {
         Session session = sessionFactory.getCurrentSession();
         session.persist(item);
+        session.flush();
+        return item.getId();
     }
 
     @Override
-    public Item getByFeedId(String feed_id) throws DBException {
+    public List<Item> getItemsListByFeedId(int id) {
         Session session = sessionFactory.getCurrentSession();
-        return (Item) session.get(Item.class, feed_id);
+        return(List<Item>) session.createCriteria(Item.class).add(Restrictions.eq("feed_id", id)).list();
     }
+
+
 }

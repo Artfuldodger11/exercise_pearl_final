@@ -9,5 +9,6 @@ import java.util.List;
 public interface RSSFeedParser {
 
     Feed readFeed();
+
     List<Item> readItems();
 }

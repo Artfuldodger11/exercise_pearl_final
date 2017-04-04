@@ -11,7 +11,6 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurerAdapter
 import org.springframework.web.servlet.view.InternalResourceViewResolver;
 import org.springframework.web.servlet.view.JstlView;
 
-
 @Configuration
 @EnableWebMvc
 @ComponentScan(basePackages = "project")
@@ -28,12 +27,6 @@ public class WebMVCConfig extends WebMvcConfigurerAdapter {
     public void addResourceHandlers(ResourceHandlerRegistry registry) {
       registry.addResourceHandler("/**")
        .addResourceLocations("/");
-//
-//         registry.addResourceHandler("/styles/**")
-//                 .addResourceLocations("/styles/");
-//
-//         registry.addResourceHandler("/images/**")
-//                 .addResourceLocations("/images/");
 
     }
 }

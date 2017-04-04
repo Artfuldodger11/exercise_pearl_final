@@ -20,7 +20,6 @@ public class FeedsDAOimpl implements FeedsDAO{
     @Autowired
     private SessionFactory sessionFactory;
 
-
     @Override
     public void create(Feed feed) throws DBException {
         Session session = sessionFactory.getCurrentSession();
@@ -33,6 +32,11 @@ public class FeedsDAOimpl implements FeedsDAO{
         return session.createCriteria(Feed.class).list();
     }
 
+    @Override
+    public Feed getFeedById(Integer id) throws DBException {
+        Session session = sessionFactory.getCurrentSession();
+        return (Feed) session.get(Feed.class, id);
+    }
 
 
 }

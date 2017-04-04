@@ -1,10 +1,17 @@
 package project.database;
 
 
+import org.joda.time.LocalDateTime;
+import project.domain.Feed;
 import project.domain.Item;
+
+import java.util.List;
 
 public interface ItemsDAO {
 
-    void create(Item item) throws DBException;
-    Item getByFeedId(String feed_id) throws DBException;
+    int create(Item item) throws DBException;
+
+    List<Item> getItemsListByFeedId(int feed_id) throws DBException;
+
+
 }

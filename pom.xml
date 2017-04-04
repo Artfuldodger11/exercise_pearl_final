@@ -30,17 +30,29 @@
         <maven.compiler.target>1.8</maven.compiler.target>
 
 
-        <webflow-version>2.4.1.RELEASE</webflow-version>
-        <spring-framework-version>4.1.5.RELEASE</spring-framework-version>
+
+        <spring-framework-version>4.3.4.RELEASE</spring-framework-version>
         <springsecurity-version>3.2.6.RELEASE</springsecurity-version>
         <slf4j-version>1.6.1</slf4j-version>
         <mysqlconnector-version>6.0.5</mysqlconnector-version>
         <hibernate-version>4.3.6.Final</hibernate-version>
-        <rome-version>1.0.0</rome-version>
+
     </properties>
 
 
     <dependencies>
+
+        <dependency>
+            <groupId>joda-time</groupId>
+            <artifactId>joda-time</artifactId>
+            <version>2.9</version>
+        </dependency>
+
+        <dependency>
+            <groupId>org.jadira.usertype</groupId>
+            <artifactId>usertype.core</artifactId>
+            <version>3.0.0.CR1</version>
+        </dependency>
 
         <dependency>
             <groupId>stax</groupId>
@@ -109,52 +121,6 @@
             <version>${springsecurity-version}</version>
         </dependency>
 
-
-        <!--
-               <dependency>
-                   <groupId>org.slf4j</groupId>
-                   <artifactId>slf4j-api</artifactId>
-                   <version>${slf4j-version}</version>
-               </dependency>
-
-               <dependency>
-                   <groupId>org.slf4j</groupId>
-                   <artifactId>jcl-over-slf4j</artifactId>
-                   <version>${slf4j-version}</version>
-               </dependency>
-
-               <dependency>
-                   <groupId>org.slf4j</groupId>
-                   <artifactId>slf4j-log4j12</artifactId>
-                   <version>${slf4j-version}</version>
-                   <scope>runtime</scope>
-               </dependency>
-
-               <dependency>
-                   <groupId>log4j</groupId>
-                   <artifactId>log4j</artifactId>
-                   <version>1.2.15</version>
-                   <exclusions>
-                       <exclusion>
-                           <groupId>javax.mail</groupId>
-                           <artifactId>mail</artifactId>
-                       </exclusion>
-                       <exclusion>
-                           <groupId>javax.jms</groupId>
-                           <artifactId>jms</artifactId>
-                       </exclusion>
-                       <exclusion>
-                           <groupId>com.sun.jdmk</groupId>
-                           <artifactId>jmxtools</artifactId>
-                       </exclusion>
-                       <exclusion>
-                           <groupId>com.sun.jmx</groupId>
-                           <artifactId>jmxri</artifactId>
-                       </exclusion>
-                   </exclusions>
-                   <scope>runtime</scope>
-               </dependency>
--->
         <dependency>
             <groupId>javax.servlet</groupId>
             <artifactId>javax.servlet-api</artifactId>

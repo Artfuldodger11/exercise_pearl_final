@@ -3,6 +3,7 @@ package project.config;
 
 import org.apache.commons.dbcp.BasicDataSource;
 import org.hibernate.SessionFactory;
+
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
@@ -13,6 +14,7 @@ import org.springframework.core.io.ClassPathResource;
 import org.springframework.core.io.Resource;
 import org.springframework.orm.hibernate4.HibernateTransactionManager;
 import org.springframework.orm.hibernate4.LocalSessionFactoryBean;
+import org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean;
 import org.springframework.transaction.PlatformTransactionManager;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
 
@@ -46,14 +48,17 @@ public class SpringConfig {
              @Value("${hibernate.dialect}") String dialect,
              @Value("${hibernate.show_sql}") boolean showSql,
              @Value("${hibernate.format_sql}") boolean formatSql,
-             @Value("${hibernate.hbm2ddl.auto}") String hbm2ddl) {
+             @Value("${hibernate.hbm2ddl.auto}") String hbm2ddl)
+             {
                 Properties properties = new Properties();
                 properties.put("hibernate.dialect", dialect);
                 properties.put("hibernate.show_sql", showSql);
                 properties.put("hibernate.format_sql", formatSql);
                 properties.put("hibernate.hbm2ddl.auto", hbm2ddl);
+
                 return properties;
             }
+
 
              @Bean(destroyMethod = "close")
      public DataSource dataSource(
@@ -81,13 +86,14 @@ public class SpringConfig {
         sessionFactoryBean.setHibernateProperties(properties);
         sessionFactoryBean.afterPropertiesSet();
         return sessionFactoryBean.getObject();
+
+
     }
 
     @Bean
     public PlatformTransactionManager transactionManager(SessionFactory sessionFactory) {
         return new HibernateTransactionManager(sessionFactory);
     }
-
 
 
 }

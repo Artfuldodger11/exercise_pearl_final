@@ -1,12 +1,11 @@
 package project.mvc.Controllers;
 
 
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Controller;
 
-import org.springframework.ui.ModelMap;
-import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -25,8 +24,8 @@ import project.service.UrlValidatorImpl;
 
 import javax.servlet.http.HttpServletRequest;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
+
 
 @Controller
 @RequestMapping ("/")
@@ -44,13 +43,24 @@ public class AppController {
     List<Item> itemsList = new ArrayList<>();
     List<Feed> feedsList = new ArrayList<>();
 
-    ModelAndView modelAddFeed = new ModelAndView("addFeed");
-    ModelAndView modelFeedsList = new ModelAndView("feedsList");
-    UrlValidator urlValidator = new UrlValidatorImpl();
+
+
+    @RequestMapping(value = "/", method = {RequestMethod.GET})
+    public ModelAndView indexPageButton(HttpServletRequest request) {
+
+        if (request.getParameter("RedirectToListPage") != null) {
+            return new ModelAndView("addFeed", "", null);
+        }
+
+        return new ModelAndView("main", "model", null);
+
+    }
 
     @RequestMapping(value = "add_feed", method = RequestMethod.GET)
-    public ModelAndView processRequest(HttpServletRequest request) throws DBException {
+    public ModelAndView urlAndFeedEnter(HttpServletRequest request) throws DBException {
 
+        ModelAndView modelAddFeed = new ModelAndView("addFeed");
+        UrlValidator urlValidator = new UrlValidatorImpl();
 
         // URL & Feed Name enter
 
@@ -59,16 +69,20 @@ public class AppController {
             try {
                 RSSFeedParser rssParser = new RSSFeedParserImpl(request.getParameter("rss_feed_url"), request.getParameter("rss_feed_name"));
 
-                // adding feeds to DB
-                feed = rssParser.readFeed();
-                feedsDao.create(feed);
+                //paring feeds and items and adding to db
 
-                //adding items to DB
+                feed = rssParser.readFeed();
                 itemsList = rssParser.readItems();
 
-                for (Item item : itemsList) {
+
+                feed.setItemList(itemsList);
+
+                for(Item item : itemsList) {
                     itemsDao.create(item);
                 }
+                feedsDao.create(feed);
+
+
 
                 modelAddFeed.addObject("Feed_added_message", "Feed added : " + feed.getFeed_name());
                 return modelAddFeed;
@@ -87,23 +101,38 @@ public class AppController {
     @RequestMapping(value = "/feedList", method = {RequestMethod.GET})
     public ModelAndView redirectToListPage(HttpServletRequest request) throws DBException {
 
-
         // Feeds List
-        feedsList = feedsDao.getAll();
-        modelFeedsList.addObject(feedsList);
-
-        request.setAttribute("feedsList", feedsList);
-        request.getParameter("RedirectToListPage");
-        return new ModelAndView("feedsList", "", null);
+        try {
+            feedsList = feedsDao.getAll();
+            request.setAttribute("feedsList", feedsList);
+            return new ModelAndView("feedsList");
+        } catch (DBException e) {
+            return new ModelAndView("feedsList");
+        }
     }
 
 
-    @RequestMapping(value = { "/show-${feedItems}-items" }, method = RequestMethod.GET)
-    public ModelAndView showFeedItems(@PathVariable int feedItems) {
+    @RequestMapping(value = { "{feedItems}" }, method = RequestMethod.GET)
+    public ModelAndView showFeedItems(@PathVariable int feedItems, HttpServletRequest request) throws DBException {
 
-        System.out.println(feedItems);
-        return new ModelAndView("feedItemsList");
+        //add items list related to specific feed
+        //add specific feed name
+
+        try {
+        Map<String, Object> model = new HashMap<String, Object>();
+
+        List<?> feedItemsList = itemsDao.getItemsListByFeedId(feedItems);
+
+        model.put("feedItemsList", feedItemsList);
+
+        Feed feedName = feedsDao.getFeedById(feedItems);
+        model.put("feedName", feedName);
+
+        return new ModelAndView("feedItemsList", "model", model);
+
+       }catch (DBException e) {
+        return new ModelAndView("feedItemsList", "model", "DB error");
     }
 
-
+   }
 }

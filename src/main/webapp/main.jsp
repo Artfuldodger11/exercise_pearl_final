@@ -2,13 +2,12 @@
 
 <c:url var="css" value="styles/main.css"/>
 <link type="text/css" rel="stylesheet" href="${css}" media="screen,projection"/>
-<%@ page contentType="text/html;charset=UTF-8" language="java" %>
-<!DOCTYPE html>
+<%@ page contentType="text/html;charset=UTF-8" language="java" isELIgnored="false" %>
+
 <html>
 
 <head>
     <title> RSS Parser</title>
-
 </head>
 
 <body>

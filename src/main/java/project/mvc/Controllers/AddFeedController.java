@@ -1,5 +1,5 @@
 package project.mvc.Controllers;
 
 
-public class FeedItemsController {
+public class AddFeedController {
 }
